@@ -1,0 +1,41 @@
+name: CI Docker Build + Tagging
+
+on:
+  push:
+    branches: [main, feature/*]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate image tags
+        id: meta
+        shell: bash
+        run: |
+          SHA_TAG=$(git rev-parse --short HEAD)
+          BRANCH_TAG=$(echo "$GITHUB_REF_NAME" | tr '/' '-')
+
+          echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
+          echo "BRANCH_TAG=$BRANCH_TAG" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image (latest)
+        run: docker build -t express-ts-demo:latest .
+
+      - name: Tag image with SHA
+        run: |
+          docker tag express-ts-demo:latest express-ts-demo:${{ steps.meta.outputs.SHA_TAG }}
+
+      - name: Tag image with branch name
+        run: |
+          docker tag express-ts-demo:latest express-ts-demo:${{ steps.meta.outputs.BRANCH_TAG }}
+
+      - name: Show images
+        run: docker images | grep express-ts-demo
