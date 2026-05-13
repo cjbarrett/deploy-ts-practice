@@ -18,9 +18,13 @@ jobs:
 
       - name: Generate image tags
         id: meta
+        shell: bash
         run: |
-          echo "SHA_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "BRANCH_TAG=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          SHA_TAG=$(git rev-parse --short HEAD)
+          BRANCH_TAG=$(echo "${GITHUB_REF_NAME}" | sed 's/\//-/g')
+
+          echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
+          echo "BRANCH_TAG=$BRANCH_TAG" >> $GITHUB_OUTPUT
 
       - name: Build Docker image (latest)
         run: docker build -t express-ts-demo:latest .
