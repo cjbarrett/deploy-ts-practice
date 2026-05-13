@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           SHA_TAG=$(git rev-parse --short HEAD)
-          BRANCH_TAG=$(echo "${GITHUB_REF_NAME}" | sed 's/\//-/g')
+          BRANCH_TAG=$(echo "$GITHUB_REF_NAME" | tr '/' '-')
 
           echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
           echo "BRANCH_TAG=$BRANCH_TAG" >> $GITHUB_OUTPUT
