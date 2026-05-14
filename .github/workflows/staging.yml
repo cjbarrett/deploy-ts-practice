@@ -37,7 +37,7 @@ jobs:
       - name: Build Docker image (SHA + staging)
         run: |
           docker build \
-            -t ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }} \
+            -t ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }} .\
             -t ghcr.io/cjbarrett/deploy-ts-practice: .
 
       - name: Push Docker images
