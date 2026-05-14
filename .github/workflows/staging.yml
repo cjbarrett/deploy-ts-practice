@@ -34,14 +34,16 @@ jobs:
           SHA_TAG=$(git rev-parse --short HEAD)
           echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
 
-      - name: Build Docker image
+      - name: Build Docker image (staging + sha)
         run: |
           docker build \
-          -t ghcr.io/cjbarrett/deploy-ts-practice:staging .
+            -t ghcr.io/cjbarrett/deploy-ts-practice:staging \
+            -t ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }} .
 
-      - name: Push Docker image
+      - name: Push Docker images
         run: |
           docker push ghcr.io/cjbarrett/deploy-ts-practice:staging
+          docker push ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
 
-      - name: Trigger Render deploy (staging)
+      - name: Trigger Render deploy
         run: curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
