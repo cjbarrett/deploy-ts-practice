@@ -1,16 +1,16 @@
-name: CI Docker Build + Tagging + GHCR
+name: Deploy to GHCR
 
 on:
   push:
-    branches: [main, feature/*]
-  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
   packages: write
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,10 +32,8 @@ jobs:
         shell: bash
         run: |
           SHA_TAG=$(git rev-parse --short HEAD)
-          BRANCH_TAG=$(echo "$GITHUB_REF_NAME" | tr '/' '-')
 
           echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
-          echo "BRANCH_TAG=$BRANCH_TAG" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         run: |
@@ -47,16 +45,10 @@ jobs:
           docker tag ghcr.io/cjbarrett/deploy-ts-practice:latest \
             ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
 
-      - name: Tag image with branch name
-        run: |
-          docker tag ghcr.io/cjbarrett/deploy-ts-practice:latest \
-            ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.BRANCH_TAG }}
-
       - name: Push Docker images
         run: |
           docker push ghcr.io/cjbarrett/deploy-ts-practice:latest
           docker push ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
-          docker push ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.BRANCH_TAG }}
 
       - name: Show images
         run: docker images | grep deploy-ts-practice
