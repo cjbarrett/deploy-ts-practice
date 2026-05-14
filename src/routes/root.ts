@@ -4,7 +4,7 @@ const router = Router();
 
 router.get("/", (_req, res) => {
     res.json({
-        message: "Hello from Express + TypeScript!!!!!"
+        message: "Hello from Express + TypeScript!!!!! w00t!!!!"
     });
 });
 
