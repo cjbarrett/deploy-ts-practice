@@ -43,7 +43,10 @@ jobs:
         run: |
           docker push ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
 
-      - name: Trigger Render Deploy
+      - name: Trigger Render deploy (staging)
+        run: curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
+
+      - name: Trigger Render Deploy (prod)
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
 
       - name: Show images
