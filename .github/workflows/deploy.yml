@@ -32,22 +32,15 @@ jobs:
         shell: bash
         run: |
           SHA_TAG=$(git rev-parse --short HEAD)
-
           echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         run: |
           docker build \
-            -t ghcr.io/cjbarrett/deploy-ts-practice:latest .
+            -t ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }} .
 
-      - name: Tag image with SHA
+      - name: Push Docker image
         run: |
-          docker tag ghcr.io/cjbarrett/deploy-ts-practice:latest \
-            ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
-
-      - name: Push Docker images
-        run: |
-          docker push ghcr.io/cjbarrett/deploy-ts-practice:latest
           docker push ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
 
       - name: Show images
