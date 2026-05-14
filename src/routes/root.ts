@@ -4,7 +4,7 @@ const router = Router();
 
 router.get("/", (_req, res) => {
     res.json({
-        message: "TESTING.... w00t!!!!"
+        message: "One more test... w00t!!!!"
     });
 });
 
