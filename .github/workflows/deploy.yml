@@ -1,4 +1,4 @@
-name: Deploy to GHCR
+name: Deploy to Production
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Generate image tags
+      - name: Generate SHA tag
         id: meta
         shell: bash
         run: |
@@ -43,10 +43,7 @@ jobs:
         run: |
           docker push ghcr.io/cjbarrett/deploy-ts-practice:${{ steps.meta.outputs.SHA_TAG }}
 
-      - name: Trigger Render deploy (staging)
-        run: curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
-
-      - name: Trigger Render Deploy (prod)
+      - name: Trigger Render deploy (production)
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
 
       - name: Show images
