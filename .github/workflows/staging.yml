@@ -42,3 +42,6 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/cjbarrett/deploy-ts-practice:staging-${{ steps.meta.outputs.SHA_TAG }}
+
+      - name: Trigger Render deploy (staging)
+        run: curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
