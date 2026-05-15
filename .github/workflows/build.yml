@@ -1,23 +1,31 @@
-name: Build & Validate
+name: CI - Build & Validate
 
 on:
   pull_request:
-  push:
     branches:
-      - feature/*
+      - staging
+      - main
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint (strict)
+        run: npm run lint -- --max-warnings=0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: |
-          docker build \
-            -t deploy-ts-practice:test .
+        run: docker build -t deploy-ts-practice:test .
